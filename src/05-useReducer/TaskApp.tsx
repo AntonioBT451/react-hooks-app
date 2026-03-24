@@ -18,27 +18,43 @@ export const TaskApp = () => {
   const [inputValue, setInputValue] = useState('');
 
   const addTodo = () => {
-    console.log('Agregar tarea', inputValue);
+    if (!inputValue) return;
 
+    const newTodo: Todo = {
+      id: Date.now(),
+      text: inputValue,
+      completed: false,
+    };
+
+    setTodos([...todos, newTodo]);
+    setInputValue('');
   };
 
   const toggleTodo = (id: number) => {
-    console.log('Cambiar de true a false', id);
+    const updatedTodos = todos.map((todo) => {
+      if (todo.id === id) {
+        return { ...todo, completed: !todo.completed };
+      }
+      return todo;
+    });
 
+    setTodos(updatedTodos);
   };
 
   const deleteTodo = (id: number) => {
-    console.log('Eliminar tarea', id);
-
+    const updatedTodo = todos.filter(todo => todo.id !== id);
+    setTodos(updatedTodo);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    console.log('Presiono enter', e);
+    if (!(e.code === 'Enter')) return;
 
+    addTodo();
   };
 
   const completedCount = todos.filter((todo) => todo.completed).length;
   const totalCount = todos.length;
+  const progressPercentage = Math.round((completedCount / totalCount) * 100);
 
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 p-4">
@@ -84,7 +100,7 @@ export const TaskApp = () => {
                 <span>
                   {completedCount} de {totalCount} completadas
                 </span>
-                <span>{Math.round((completedCount / totalCount) * 100)}%</span>
+                <span>{progressPercentage}%</span>
               </div>
               <div className="w-full bg-slate-200 rounded-full h-2">
                 <div
