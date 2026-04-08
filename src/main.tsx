@@ -8,10 +8,11 @@ import './index.css'
 // import { PokemonPage } from './03-examples/PokemonPage'
 // import { FocusScreen } from './04-useRef/FocusScreen'
 // import { TaskApp } from './05-useReducer/TaskApp'
-import { ScrambleWords } from './05-useReducer/ScrambleWords'
+// import { ScrambleWords } from './05-useReducer/ScrambleWords'
+import { ScrambleWordsWithReducer } from './05-useReducer/ScrambleWordsWithReducer'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ScrambleWords />
+    <ScrambleWordsWithReducer />
   </StrictMode>,
 )
