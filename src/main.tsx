@@ -9,10 +9,11 @@ import './index.css'
 // import { FocusScreen } from './04-useRef/FocusScreen'
 // import { TaskApp } from './05-useReducer/TaskApp'
 // import { ScrambleWords } from './05-useReducer/ScrambleWords'
-import { ScrambleWordsWithReducer } from './05-useReducer/ScrambleWordsWithReducer'
+// import { ScrambleWordsWithReducer } from './05-useReducer/ScrambleWordsWithReducer'
+import { MemoHook } from './06-memos/MemoHook'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ScrambleWordsWithReducer />
+    <MemoHook />
   </StrictMode>,
 )
