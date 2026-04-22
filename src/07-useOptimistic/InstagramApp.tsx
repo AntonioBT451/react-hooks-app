@@ -1,4 +1,5 @@
-import { useOptimistic, useState } from 'react';
+import { useOptimistic, useState, useTransition } from 'react';
+import { toast } from 'sonner';
 
 interface Comment {
     id: number;
@@ -9,6 +10,9 @@ interface Comment {
 let lastId = 2;
 
 export const InstagramApp = () => {
+
+    const [isPending, startTransition] = useTransition();
+
     const [comments, setComments] = useState<Comment[]>([
         { id: 1, text: '¡Gran foto!' },
         { id: 2, text: 'Me encanta 🧡' },
@@ -17,12 +21,11 @@ export const InstagramApp = () => {
     const [optimisticComments, addOptimisticComment] = useOptimistic(
         comments,
         (currentComments, newCommentText: string) => {
-            lastId++;
-            // Retorna el nuevo estado "imaginario"
+            const newId = lastId + 1;
             return [
                 ...currentComments,
                 {
-                    id: lastId,
+                    id: newId,
                     text: newCommentText,
                     optimistic: true,
                 }
@@ -30,23 +33,49 @@ export const InstagramApp = () => {
         }
     );
 
+    const shouldSucceed = () => {
+        return Math.random() > 0.5;
+    };
+
+
     const handleAddComment = async (formData: FormData) => {
         const messageText = formData.get('post-message') as string;
-        console.log('Nuevo comentario', messageText);
+        const tempId = lastId + 1;
 
+        // 1. ACTUALIZACIÓN URGENTE (Optimista)
         addOptimisticComment(messageText);
 
-        // Simular petición
-        await new Promise((resolve) => setTimeout(resolve, 3000));
+        // 2. INICIO DE LA TRANSICIÓN (Segundo plano)
+        startTransition(async () => {
+            // Simular petición
+            await new Promise((resolve) => setTimeout(resolve, 3000));
 
-        console.log('Mensaje grabado');
-        setComments((prev) => [
-            ...prev,
-            {
-                id: lastId,
-                text: messageText,
-            }
-        ]);
+            if (shouldSucceed()) {
+                // 3. ACTUALIZACIÓN DE ESTADO REAL
+                lastId++;
+
+                setComments((prev) =>
+                    prev.map(comment =>
+                        comment.id === tempId
+                            ? { ...comment, optimistic: false }
+                            : comment
+                    )
+                );
+            } else {
+                // Código para revertir el proceso, caso de error.
+                setComments((prev) => prev.filter(comment => comment.id !== tempId));
+
+                toast('Error al agregar el comentario', {
+                    description: 'Intente nuevamente',
+                    duration: 5_000,
+                    position: 'bottom-right',
+                    action: {
+                        label: 'Cerrar',
+                        onClick: () => toast.dismiss(),
+                    }
+                });
+            };
+        });
     };
 
     return (
@@ -93,8 +122,9 @@ export const InstagramApp = () => {
                     />
                     <button
                         type="submit"
-                        disabled={false}
-                        className="bg-blue-500 text-white p-2 rounded-md w-full"
+                        disabled={isPending}
+                        className="bg-blue-500 text-white p-2 rounded-md w-full 
+                        disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         Enviar
                     </button>
