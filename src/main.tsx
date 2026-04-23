@@ -1,7 +1,9 @@
 import { StrictMode, Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
-import './index.css'
 import { Toaster } from 'sonner'
+
+import './index.css'
+
 // import { HooksApp } from './HooksApp'
 // import { TrafficLight } from './01-useState/TrafficLight'
 // import { TrafficLightWithEffect } from './02-useEffect/TrafficLightWithEffect'
@@ -14,19 +16,22 @@ import { Toaster } from 'sonner'
 // import { MemoHook } from './06-memos/MemoHook'
 // import { MemoCounter } from './06-memos/MemoCounter'
 // import { InstagramApp } from './07-useOptimistic/InstagramApp'
-import { ClientInformation } from './08-use-suspense/ClientInformation'
-import { getUserAction } from './08-use-suspense/api/get-user.action'
+// import { ClientInformation } from './08-use-suspense/ClientInformation'
+// import { getUserAction } from './08-use-suspense/api/get-user.action'
+import { ProfessionalApp } from './09-useContext/ProfessionalApp';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Toaster />
 
-    <Suspense fallback={
+    {/* <Suspense fallback={
       <div className='bg-gradient flex flex-col'>
         <h1 className='text-2xl'>Cargando...</h1>
       </div>
     }>
       <ClientInformation getUser={getUserAction(100)} />
-    </Suspense>
+    </Suspense> */}
+
+    <ProfessionalApp />
   </StrictMode>,
 )
