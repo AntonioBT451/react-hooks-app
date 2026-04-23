@@ -1,4 +1,4 @@
-import { StrictMode } from 'react'
+import { StrictMode, Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import { Toaster } from 'sonner'
@@ -13,11 +13,20 @@ import { Toaster } from 'sonner'
 // import { ScrambleWordsWithReducer } from './05-useReducer/ScrambleWordsWithReducer'
 // import { MemoHook } from './06-memos/MemoHook'
 // import { MemoCounter } from './06-memos/MemoCounter'
-import { InstagramApp } from './07-useOptimistic/InstagramApp'
+// import { InstagramApp } from './07-useOptimistic/InstagramApp'
+import { ClientInformation } from './08-use-suspense/ClientInformation'
+import { getUserAction } from './08-use-suspense/api/get-user.action'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Toaster />
-    <InstagramApp />
+
+    <Suspense fallback={
+      <div className='bg-gradient flex flex-col'>
+        <h1 className='text-2xl'>Cargando...</h1>
+      </div>
+    }>
+      <ClientInformation getUser={getUserAction(100)} />
+    </Suspense>
   </StrictMode>,
 )
